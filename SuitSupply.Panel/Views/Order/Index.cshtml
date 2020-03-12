@@ -1,0 +1,64 @@
+@using RabbitMQ.Client.Framing.Impl
+@using SuitSupply.Order.Domain
+@model List<OrderVM>
+<div class="jumbotron">
+    <div class="row"> <a class=" btn btn-primary" asp-action="NewOrder">Add Order</a></div>
+    <div class="row">
+    <table class="table table-bordered">
+        <thead>
+        <td>#</td>
+        <td class="col-3">User Email</td>
+        <td class="col-3">Status</td>
+        <td class="col-3">Detail</td>
+        <td col="col-3">Action</td>
+        </thead>
+        <tbody>
+        @{
+            var i = 1;
+            foreach (var item  in Model)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td class="col-3">@item.CustomerEmail</td>
+                    <td class="col-3">@item.State</td>
+                    <td class="col-3"><a class="">Detail</a></td>
+                    <td col="col-3">
+                        @if (item.State == @OrderState.Registered)
+                        {
+                            @Html.ActionLink("Pay", "SetPaid", "Order",
+                            new {
+                                Id = item.Id
+                            },
+                            new {
+                                @class = "btn btn-success"
+                            })
+                            
+                        }
+                        else if (item.State == OrderState.Paid)
+                        {
+                            @Html.ActionLink("Finish", "SetFinished", "Order", 
+                                new {
+                                    Id = item.Id
+                                },
+                                new {
+                                    @class = "btn btn-warning"
+                                })
+                        }
+                        else
+                        {
+                            @Html.Label("Finished", 
+                                 "Finished",
+                                new {
+                                    @class = "btn btn-dark"
+                                })
+
+                        }
+                    </td>
+                </tr>
+                i+=1;
+            }
+        }
+        </tbody>
+    </table>
+</div>
+</div>

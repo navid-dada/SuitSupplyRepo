@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UserSecretsId>aspnet-WebApplication-C4A4E07B-A61E-4BBC-BE79-ABB85B334587</UserSecretsId>
+        <RootNamespace>WebApplication</RootNamespace>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="EasyNetQ" Version="3.7.1" />
+        <PackageReference Include="EasyNetQ.DI.Microsoft" Version="3.7.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SuitSupply.Order\SuitSupply.Order.csproj" />
+    </ItemGroup>
+
+</Project>
