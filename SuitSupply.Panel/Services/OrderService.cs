@@ -8,10 +8,9 @@ using EasyNetQ;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SuitSupply.Messages;
+using SuitSupply.Messages.Commands;
 using WebApplication.Models;
-using Alternation = SuitSupply.Messages.Alternation;
-using AlternationPart = SuitSupply.Messages.AlternationPart;
-using AlternationSide = SuitSupply.Messages.AlternationSide;
+
 
 namespace WebApplication.Services
 {

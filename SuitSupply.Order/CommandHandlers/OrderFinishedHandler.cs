@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using EasyNetQ;
 using Microsoft.EntityFrameworkCore;
 using SuitSupply.Messages;
+using SuitSupply.Messages.Commands;
+using SuitSupply.Messages.Events;
 
 namespace SuitSupply.Order
 {
@@ -14,17 +17,35 @@ namespace SuitSupply.Order
             _bus = bus;
             _bus.Subscribe("OrderFinished", async (OrderFinishedCommand command) =>
             {
-                var order = await ctx.Orders.Include("Alternations").FirstAsync( x=> x.Id == Guid.Parse(command.Id));
-                order.SetAsFinished();
-                ctx.SaveChanges();
-                var notificationCommand = new NotifyCustomerCommand(order.Id.ToString());
-                notificationCommand.AddNotification(new Notification
+                try
+                {
+                    var order = await ctx.Orders.Include("Alternations")
+                        .FirstAsync(x => x.Id == Guid.Parse(command.Id));
+                    order.SetAsFinished();
+                    ctx.SaveChanges();
+                    var notificationCommand = new NotifyCustomerCommand(order.Id.ToString());
+                    notificationCommand.AddNotification(new Notification
                     {
                         Recipient = order.CustomerEmail,
                         NotificationType = NotificationType.Email,
                         Text = $"Your Order is Done!"
                     });
-                _bus.Publish(notificationCommand);
+                    await _bus.PublishAsync(notificationCommand);
+                    await _bus.PublishAsync(new OrderFinished(command.Id));
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception occured on setting paid order for orderId {command.Id} ,Exception {ex} ");
+                    var errors = new List<Error>
+                    {
+                        new Error
+                        {
+                            ErrorCode = 101, Message = ex.Message
+                        }
+                    };
+                    await _bus.PublishAsync(new OrderFinishedFailed(command.Id, errors));
+                }
             });
         }
     }

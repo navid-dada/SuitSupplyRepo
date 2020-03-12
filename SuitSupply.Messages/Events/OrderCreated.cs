@@ -8,6 +8,7 @@ namespace SuitSupply.Messages.Events
         public OrderCreated(string id)
         {
             _orderId = id;
+            _state = OrderState.Registered;
         }
     }
 }

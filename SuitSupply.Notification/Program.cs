@@ -3,6 +3,7 @@ using EasyNetQ;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SuitSupply.Messages;
+using SuitSupply.Messages.Commands;
 
 namespace SuitSupply.Notification
 {

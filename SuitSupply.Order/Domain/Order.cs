@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using SuitSupply.DataAccess.Model;
 using SuitSupply.Messages;
+using SuitSupply.Messages.Commands;
 
 namespace SuitSupply.Order.Domain
 {
