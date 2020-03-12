@@ -6,6 +6,7 @@ using SuitSupply.DataAccess.Model;
 using SuitSupply.Messages;
 using SuitSupply.Messages.Commands;
 
+
 namespace SuitSupply.Order.Domain
 {
     public class Order: BaseEntity

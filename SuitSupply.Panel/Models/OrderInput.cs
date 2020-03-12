@@ -5,8 +5,7 @@ namespace WebApplication.Models
 {
     public class OrderInput
     {
-        [Required]
-        public string Email { get; set; }
+        [Required] public string Email { get; set; }
         public List<Alternation> Alternations { get; set; }
     }
 
@@ -18,15 +17,4 @@ namespace WebApplication.Models
     }
 
 
-    public enum AlternationSide
-    {
-        Right =0 ,
-        Left =1
-    }
-    
-    public enum AlternationPart
-    {
-        Sleeves =0 ,
-        Trousers =1
-    }
 }

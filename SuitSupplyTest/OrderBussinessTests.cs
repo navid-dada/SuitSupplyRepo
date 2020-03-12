@@ -5,7 +5,6 @@ using NUnit.Framework;
 using SuitSupply.Messages;
 using SuitSupply.Order.Domain;
 using Alternation = SuitSupply.Order.Domain.Alternation;
-using AlternationType = SuitSupply.Order.Domain.AlternationType;
 
 namespace SuitSupplyTest
 {

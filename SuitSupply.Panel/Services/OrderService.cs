@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using SuitSupply.Messages;
 using SuitSupply.Messages.Commands;
 using WebApplication.Models;
+using Alternation = SuitSupply.Messages.Commands.Alternation;
+
 
 
 namespace WebApplication.Services
@@ -32,9 +34,9 @@ namespace WebApplication.Services
             {
                 var alt = new Alternation
                 {
-                    Part = (AlternationPart)x.Part,
+                    Part = (AlternationPart) x.Part,
                     Size = 3.5f,
-                    Side = (AlternationSide)x.Side,
+                    Side = (AlternationSide) x.Side,
                 };
                 create.Alternations.Add(alt);
             });

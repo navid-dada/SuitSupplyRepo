@@ -16,16 +16,5 @@ namespace SuitSupply.Messages.Commands
         public AlternationPart Part { get; set; }
     }
 
-
-    public enum AlternationSide
-    {
-        Right =0 ,
-        Left =1
-    }
     
-    public enum AlternationPart
-    {
-        Sleeves =0 ,
-        Trousers =1
-    }
 }

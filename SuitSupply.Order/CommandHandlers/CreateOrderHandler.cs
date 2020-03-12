@@ -7,7 +7,7 @@ using SuitSupply.Messages.Commands;
 using SuitSupply.Messages.Events;
 using SuitSupply.Order.Domain;
 using Alternation = SuitSupply.Order.Domain.Alternation;
-using AlternationType = SuitSupply.Order.Domain.AlternationType;
+
 
 namespace SuitSupply.Order
 {
@@ -37,8 +37,7 @@ namespace SuitSupply.Order
                         else
                         {
                             order.AddAlternation(
-                                Alternation.CreateTrousersAlternationInstance(lenght, alternation.Side,
-                                    alternationType));
+                                Alternation.CreateTrousersAlternationInstance(lenght, alternation.Side, alternationType));
                         }
                     }
 

@@ -1,3 +1,4 @@
+using SuitSupply.Messages;
 using SuitSupply.Order.Domain;
 
 namespace WebApplication.Models
