@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using EasyNetQ;
 using SuitSupply.Messages;
 using SuitSupply.Order.Domain;
@@ -14,26 +16,46 @@ namespace SuitSupply.Order
         public CreateOrderHandler(IBus bus, SuitSupplyContext ctx)
         {
             _bus = bus;
-            _bus.Subscribe("CreateOrder", (CreateOrderCommand x) =>
+            _bus.Subscribe("CreateOrder", async (CreateOrderCommand command) =>
             {
-                var order = new Domain.Order(x.Email);
-                foreach (var alternation in x.Alternations)
+                try
                 {
-                    var lenght = Math.Abs(alternation.Size);
-                    var alternationType =
-                        alternation.Size > 0 ? AlternationType.Increscent : AlternationType.Decreasement;
-                    if (alternation.Part == AlternationPart.Sleeves)
+                    var order = new Domain.Order(command.Email);
+                    foreach (var alternation in command.Alternations)
                     {
-                        
-                        order.AddAlternation(Alternation.CreateSleeveAlternationInstance(lenght,alternation.Side, alternationType));
+                        var lenght = Math.Abs(alternation.Size);
+                        var alternationType =
+                            alternation.Size > 0 ? AlternationType.Increscent : AlternationType.Decreasement;
+                        if (alternation.Part == AlternationPart.Sleeves)
+                        {
+
+                            order.AddAlternation(
+                                Alternation.CreateSleeveAlternationInstance(lenght, alternation.Side, alternationType));
+                        }
+                        else
+                        {
+                            order.AddAlternation(
+                                Alternation.CreateTrousersAlternationInstance(lenght, alternation.Side,
+                                    alternationType));
+                        }
                     }
-                    else
-                    {
-                        order.AddAlternation(Alternation.CreateTrousersAlternationInstance(lenght,alternation.Side, alternationType));
-                    }
+
+                    ctx.Orders.Add(order);
+                    ctx.SaveChanges();
+                    await _bus.PublishAsync(new OrderCreated(command.Email));
                 }
-                ctx.Orders.Add(order);
-                ctx.SaveChanges();
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception occured on creating order for Email {command.Email} ,Exception {ex} ");
+                    var errors = new List<Error>
+                    {
+                        new Error
+                        {
+                            ErrorCode = 101, Message = ex.Message
+                        }
+                    };
+                    await _bus.PublishAsync(new OrderCreationFailed(command.Email, errors));
+                }
             });
         }
     }

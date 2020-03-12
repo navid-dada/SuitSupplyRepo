@@ -1,9 +1,15 @@
 
 
+using SuitSupply.Messages.Events;
+
 namespace SuitSupply.Messages
 {
-    public class OrderCreated
+    public class OrderCreated: BaseEvent
     {
-        public string Id { get; set; }
+        public OrderCreated(string id)
+        {
+            _orderId = id;
+            _state = OrderState.Registered;
+        }
     }
 }
