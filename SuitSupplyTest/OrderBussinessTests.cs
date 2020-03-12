@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using SuitSupply.Messages;
 using SuitSupply.Order.Domain;
-using Alternation = SuitSupply.Order.Domain.Alternation;
+using Alternation = SuitSupply.Order.Domain.Alteration;
 
 namespace SuitSupplyTest
 {
@@ -20,11 +20,11 @@ namespace SuitSupplyTest
         {
             float finalLenght = 3.5f; 
             var order = new Order("Email@site.com");
-            order.AddAlternation(Alternation.CreateTrousersAlternationInstance(5, AlternationSide.Left,AlternationType.Decreasement));
-            order.AddAlternation(Alternation.CreateTrousersAlternationInstance(finalLenght, AlternationSide.Left, AlternationType.Decreasement));
-            Assert.True(order.Alternations.Count() == 1);
-            var item = order.Alternations.First();
-            Assert.AreEqual(finalLenght, item.AlternationLength);
+            order.AddAlteration(Alteration.CreateTrousersAlterationInstance(5, AlterationSide.Left,AlterationType.Decreasement));
+            order.AddAlteration(Alteration.CreateTrousersAlterationInstance(finalLenght, AlterationSide.Left, AlterationType.Decreasement));
+            Assert.True(order.Alterations.Count() == 1);
+            var item = order.Alterations.First();
+            Assert.AreEqual(finalLenght, item.AlterationLength);
         }
         
         [Test]
@@ -33,14 +33,14 @@ namespace SuitSupplyTest
             var left_length = 4.5f;
             var right_length = 3.5f;
             var order = new Order("Email@site.com");
-            order.AddAlternation(Alternation.CreateTrousersAlternationInstance(left_length, AlternationSide.Left,AlternationType.Decreasement));
-            order.AddAlternation(Alternation.CreateTrousersAlternationInstance(right_length, AlternationSide.Right, AlternationType.Increscent));
-            Assert.True(order.Alternations.Count() == 2);
-            var rightItem = order.Alternations.First(x=>x.AlternationSide== AlternationSide.Right);
-            Assert.AreEqual(right_length, rightItem.AlternationLength);
+            order.AddAlteration(Alteration.CreateTrousersAlterationInstance(left_length, AlterationSide.Left,AlterationType.Decreasement));
+            order.AddAlteration(Alteration.CreateTrousersAlterationInstance(right_length, AlterationSide.Right, AlterationType.Increscent));
+            Assert.True(order.Alterations.Count() == 2);
+            var rightItem = order.Alterations.First(x=>x.AlternationSide== AlterationSide.Right);
+            Assert.AreEqual(right_length, rightItem.AlterationLength);
             
-            var leftItem = order.Alternations.First(x=>x.AlternationSide== AlternationSide.Right);
-            Assert.AreEqual(right_length, leftItem.AlternationLength);
+            var leftItem = order.Alterations.First(x=>x.AlternationSide== AlterationSide.Right);
+            Assert.AreEqual(right_length, leftItem.AlterationLength);
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace SuitSupplyTest
             var length = 5.1f;
             var order = new Order("Email@site.com");
 
-            void TestDelegate() => order.AddAlternation(Alternation.CreateTrousersAlternationInstance(length, AlternationSide.Left, AlternationType.Decreasement));
+            void TestDelegate() => order.AddAlteration(Alteration.CreateTrousersAlterationInstance(length, AlterationSide.Left, AlterationType.Decreasement));
             Assert.Throws<InvalidOperationException>(TestDelegate); 
         }
         
@@ -59,12 +59,12 @@ namespace SuitSupplyTest
             var length = -0.1f;
             var order = new Order("Email@site.com");
 
-            void TestDelegate() => order.AddAlternation(Alternation.CreateTrousersAlternationInstance(length, AlternationSide.Left, AlternationType.Decreasement));
+            void TestDelegate() => order.AddAlteration(Alteration.CreateTrousersAlterationInstance(length, AlterationSide.Left, AlterationType.Decreasement));
             Assert.Throws<InvalidOperationException>(TestDelegate); 
         }
 
         [Test]
-        public void order_set_paid_with_no_alternation()
+        public void order_set_paid_with_no_Alternation()
         {
             var order = new Order("Email@site.com");
             TestDelegate testDelegate = () => order.SetAsPaid();

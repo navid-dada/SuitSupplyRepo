@@ -1,7 +1,7 @@
 namespace SuitSupply.Messages
 {
         
-    public enum AlternationType
+    public enum AlterationType
     {
         Increscent = 0,
         Decreasement = 1 
@@ -14,12 +14,12 @@ namespace SuitSupply.Messages
         Finished = 2,
     }
     
-    public enum AlternationPart{
+    public enum AlterationPart{
         Sleeves = 0, 
         Trousers = 0
     }
 
-    public enum AlternationSide
+    public enum AlterationSide
     {
         Right = 0 , 
         Left = 1

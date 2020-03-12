@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client.Framing.Impl;
 using SuitSupply.Messages;
-using Alternation = SuitSupply.Order.Domain.Alternation;
+using Alternation = SuitSupply.Order.Domain.Alteration;
 
 namespace SuitSupply.Order.Controllers
 {
@@ -44,7 +44,7 @@ namespace SuitSupply.Order.Controllers
         public IEnumerable<Alternation> GetAllOrders(string Id)
         {
             
-            var result = _context.Orders.Include("Alternations").First(x=> x.Id == Guid.Parse(Id)).Alternations;
+            var result = _context.Orders.Include("Alternations").First(x=> x.Id == Guid.Parse(Id)).Alterations;
             return result;
         }
     }

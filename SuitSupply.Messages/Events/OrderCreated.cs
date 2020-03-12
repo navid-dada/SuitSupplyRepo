@@ -5,10 +5,10 @@ namespace SuitSupply.Messages.Events
     public class OrderCreated:BaseEvent
     {
 
-        public OrderCreated()
+        public OrderCreated(string orderId)
         {
-            _state = OrderState.Registered;
-
+            State = OrderState.Registered;
+            OrderId = orderId;
         }
         
     }

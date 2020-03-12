@@ -11,7 +11,7 @@ using SuitSupply.Messages;
 using SuitSupply.Messages.Commands;
 using WebApplication.Helper;
 using WebApplication.Models;
-using Alternation = SuitSupply.Messages.Commands.Alternation;
+using Alteration = SuitSupply.Messages.Commands.Alteration;
 
 namespace WebApplication.Services
 {
@@ -31,15 +31,15 @@ namespace WebApplication.Services
         {
             var create = new CreateOrderCommand( input.Email);
             
-            input.Alternations.ForEach(x =>
+            input.Alterations.ForEach(x =>
             {
-                var alt = new Alternation
+                var alt = new Alteration
                 {
-                    Part = (AlternationPart) x.Part,
+                    Part = (AlterationPart) x.Part,
                     Size = 3.5f,
-                    Side = (AlternationSide) x.Side,
+                    Side = (AlterationSide) x.Side,
                 };
-                create.Alternations.Add(alt);
+                create.Alterations.Add(alt);
             });
             var taskCompletionSource = _taskManager.AddWaitingTask($"{create.Email}_{OrderState.Registered}");
             await _channel.PublishAsync(create);
@@ -48,12 +48,16 @@ namespace WebApplication.Services
 
         public async Task NotifyOrderPayment(string orderId)
         {
+            var taskCompletionSource = _taskManager.AddWaitingTask($"{orderId}_{OrderState.Paid}");
             await _channel.PublishAsync(new OrderPaidCommand(orderId));
+            await taskCompletionSource.Task;
         }
 
         public async Task NotifyOrderFinished(string orderId)
         {
+            var taskCompletionSource = _taskManager.AddWaitingTask($"{orderId}_{OrderState.Finished}");
             await _channel.PublishAsync(new OrderFinishedCommand(orderId));
+            await taskCompletionSource.Task;
         }
 
         public async Task<List<OrderVM>> GetOrderList()

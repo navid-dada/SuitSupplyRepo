@@ -4,14 +4,11 @@ namespace SuitSupply.Messages.Events
 {
     public class BaseEvent
     {
-        protected string _orderId { get; set; }
-        protected OrderState _state { get; set; } = OrderState.Registered;
+        public string OrderId { get; protected set; }
+        public OrderState State { get; protected set; } = OrderState.Registered;
 
-        public string RequestId => $"{_orderId}_{_state}";
+        public string RequestId => $"{OrderId}_{State}";
 
-        public void SetOrderId(string orderId)
-        {
-            _orderId = orderId;
-        }
+        
     }
 }

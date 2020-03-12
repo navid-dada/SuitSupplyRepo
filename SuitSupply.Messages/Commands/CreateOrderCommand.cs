@@ -10,14 +10,14 @@ namespace SuitSupply.Messages.Commands
         }
 
         public string Email { get; private set; }
-        public List<Alternation> Alternations { get; set; } = new List<Alternation>();
+        public List<Alteration> Alterations { get; set; } = new List<Alteration>();
     }
 
-    public class Alternation
+    public class Alteration
     {
-        public AlternationSide Side { get; set; }
+        public AlterationSide Side { get; set; }
         public float Size { get; set; }
-        public AlternationPart Part { get; set; }
+        public AlterationPart Part { get; set; }
     }
 
     

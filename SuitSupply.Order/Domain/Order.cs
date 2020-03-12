@@ -15,19 +15,19 @@ namespace SuitSupply.Order.Domain
         public DateTime CreatedDateTime { get; private set; }
         public DateTime? PaidDatetime { get; private set; }
         public DateTime? FinisedDateTime { get; private set; }
-        private List<Alternation> _alternations;
+        private List<Alteration> _alterations;
         public string CustomerEmail { get; set; }
 
         private 
         protected Order()
         {
-            _alternations = new List<Alternation>();
+            _alterations = new List<Alteration>();
             State = OrderState.Registered;
         }
 
         public Order(string customerEmail)
         {
-            _alternations = new List<Alternation>();
+            _alterations = new List<Alteration>();
             State = OrderState.Registered;
             CustomerEmail = customerEmail;
             CreatedDateTime = DateTime.Now;
@@ -35,25 +35,25 @@ namespace SuitSupply.Order.Domain
             FinisedDateTime = null;
         }
 
-        public IEnumerable<Alternation> Alternations => _alternations;
+        public IEnumerable<Alteration> Alterations => _alterations;
 
-        public void AddAlternation(Alternation alternation)
+        public void AddAlteration(Alteration Alternation)
         {
-            var item = _alternations.FirstOrDefault(x => x.AlternationPart == alternation.AlternationPart && x.AlternationSide == alternation.AlternationSide);
+            var item = _alterations.FirstOrDefault(x => x.AlternationPart == Alternation.AlternationPart && x.AlternationSide == Alternation.AlternationSide);
             if (item == null)
             {
-                _alternations.Add(alternation);
+                _alterations.Add(Alternation);
             }
             else
             {
-                _alternations.Remove(item);
-                _alternations.Add(alternation);
+                _alterations.Remove(item);
+                _alterations.Add(Alternation);
             }
         }
 
         public void SetAsPaid()
         {
-            if (!this._alternations.Any())
+            if (!this._alterations.Any())
             {
                 throw new InvalidOperationException("Alternations is Empty");
             }
@@ -76,49 +76,49 @@ namespace SuitSupply.Order.Domain
         
     }
 
-    public class Alternation: BaseEntity
+    public class Alteration: BaseEntity
     {
-        public AlternationPart AlternationPart { get; private set; }
-        public AlternationSide AlternationSide { get; private set; }
-        public AlternationType AlternationType { get; private set;}
+        public AlterationPart AlternationPart { get; private set; }
+        public AlterationSide AlternationSide { get; private set; }
+        public AlterationType AlternationType { get; private set;}
         
-        public float AlternationLength { get; private set; }
+        public float AlterationLength { get; private set; }
 
-        protected Alternation()
+        protected Alteration()
         {
         }
 
-        protected Alternation(float lenght)
+        protected Alteration(float lenght)
         {
-            AlternationLength = lenght;
+            AlterationLength = lenght;
         }
 
-        public static Alternation CreateSleeveAlternationInstance(float lenght, AlternationSide side, AlternationType type= AlternationType.Increscent)
+        public static Alteration CreateSleeveAlterationInstance(float lenght, AlterationSide side, AlterationType type= AlterationType.Increscent)
         {
             if (lenght < 0 || lenght > 5)
             {
                 throw new InvalidOperationException("you can increase or decrease 5cm only");
             }
 
-            var alternation = new Alternation(Math.Abs(lenght));
-            alternation.AlternationPart = AlternationPart.Sleeves;
-            alternation.AlternationSide = side;
-            alternation.AlternationType = type;
-            return alternation;
+            var Alternation = new Alteration(Math.Abs(lenght));
+            Alternation.AlternationPart = AlterationPart.Sleeves;
+            Alternation.AlternationSide = side;
+            Alternation.AlternationType = type;
+            return Alternation;
         }
         
-        public static Alternation CreateTrousersAlternationInstance(float lenght, AlternationSide side, AlternationType type= AlternationType.Increscent)
+        public static Alteration CreateTrousersAlterationInstance(float lenght, AlterationSide side, AlterationType type= AlterationType.Increscent)
         {
             if (lenght < 0 || lenght > 5)
             {
                 throw new InvalidOperationException("you can increase or decrease 5cm only");
             }
 
-            var alternation = new Alternation(Math.Abs(lenght));
-            alternation.AlternationPart = AlternationPart.Trousers;
-            alternation.AlternationSide = side;
-            alternation.AlternationType = type;
-            return alternation;
+            var Alternation = new Alteration(Math.Abs(lenght));
+            Alternation.AlternationPart = AlterationPart.Trousers;
+            Alternation.AlternationSide = side;
+            Alternation.AlternationType = type;
+            return Alternation;
         }
     }
     

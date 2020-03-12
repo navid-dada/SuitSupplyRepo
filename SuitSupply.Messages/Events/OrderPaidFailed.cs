@@ -8,8 +8,8 @@ namespace SuitSupply.Messages.Events
     {
         public OrderPaidFailed(string orderId, List<Error> errors)
         {
-            _orderId = orderId;
-            _state = OrderState.Paid;
+            OrderId = orderId;
+            State = OrderState.Paid;
             Errors = errors;
         }
         public  List<Error> Errors {get; private set;}

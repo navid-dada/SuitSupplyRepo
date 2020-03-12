@@ -2,9 +2,10 @@ namespace SuitSupply.Messages.Events
 {
     public class OrderFinished : BaseEvent
     {
-        public OrderFinished()
+        public OrderFinished(string orderid)
         {
-            _state = OrderState.Finished;
+            OrderId = orderid;
+            State = OrderState.Finished;
         }
         
     }

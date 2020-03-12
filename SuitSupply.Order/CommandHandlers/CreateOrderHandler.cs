@@ -9,7 +9,7 @@ using SuitSupply.Messages;
 using SuitSupply.Messages.Commands;
 using SuitSupply.Messages.Events;
 using SuitSupply.Order.Domain;
-using Alternation = SuitSupply.Order.Domain.Alternation;
+using Alteration = SuitSupply.Order.Domain.Alteration;
 
 
 namespace SuitSupply.Order
@@ -30,38 +30,30 @@ namespace SuitSupply.Order
                 {
                     Console.WriteLine($"Create order command recived for {command.Email}");
                     var order = new Domain.Order(command.Email);
-                    foreach (var alternation in command.Alternations)
+                    foreach (var alteration in command.Alterations)
                     {
-                        var lenght = Math.Abs(alternation.Size);
-                        var alternationType =
-                            alternation.Size > 0 ? AlternationType.Increscent : AlternationType.Decreasement;
-                        if (alternation.Part == AlternationPart.Sleeves)
+                        var lenght = Math.Abs(alteration.Size);
+                        var alterationType =
+                            alteration.Size > 0 ? AlterationType.Increscent : AlterationType.Decreasement;
+                        if (alteration.Part == AlterationPart.Sleeves)
                         {
-                            order.AddAlternation(
-                                Alternation.CreateSleeveAlternationInstance(lenght, alternation.Side, alternationType));
+                            order.AddAlteration(Alteration.CreateSleeveAlterationInstance(lenght, alteration.Side, alterationType));
                         }
                         else
                         {
-                            order.AddAlternation(
-                                Alternation.CreateTrousersAlternationInstance(lenght, alternation.Side,
-                                    alternationType));
+                            order.AddAlteration(
+                                Alteration.CreateTrousersAlterationInstance(lenght, alteration.Side,
+                                    alterationType));
                         }
                     }
 
                     Console.WriteLine(
-                        $"Adding Order to database {order.CustomerEmail} with alternation count {order.Alternations.Count()}");
+                        $"Adding Order to database {order.CustomerEmail} with Alternation count {order.Alterations.Count()}");
                     ctx.Orders.Add(order);
                     ctx.SaveChanges();
-                    Console.WriteLine($"added on {DateTime.Now.Ticks}");
-
-
-                    Console.WriteLine($"Order added success fully and event raised by {command.Email}");
                     
-                    var eventt = new OrderCreated();
-                    eventt.SetOrderId(command.Email);
-                    Console.WriteLine($"event raised on {DateTime.Now.Ticks}");
-
-                    _bus.Publish(eventt);
+                    
+                    _bus.Publish( new OrderCreated(command.Email));
                 }
                 catch (Exception ex)
                 {

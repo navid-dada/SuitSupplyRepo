@@ -6,8 +6,8 @@ namespace SuitSupply.Messages.Events
     {
         public OrderFinishedFailed(string orderId, List<Error> errors)
         {
-            _orderId = orderId;
-            _state = OrderState.Finished;
+            OrderId = orderId;
+            State = OrderState.Finished;
             Errors = errors;
         }
 

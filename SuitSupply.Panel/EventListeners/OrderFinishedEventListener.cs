@@ -11,6 +11,7 @@ namespace WebApplication.EventListeners
         private IBus _bus;
         public OrderFinishedEventListener(IBus bus, TaskManager taskManager)
         {
+            _taskManager = taskManager;
             _bus = bus;
             _bus.Subscribe("orderFinishedListener", (OrderFinished x) =>
             {

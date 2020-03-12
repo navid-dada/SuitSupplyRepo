@@ -23,9 +23,7 @@ namespace SuitSupply.Order
                     order.SetAsPaid();
                     ctx.SaveChanges();
                     Console.WriteLine($"Paid Id: {command.Id}");
-                    var t = new OrderPaid();
-                    t.SetOrderId(command.Id);
-                    await _bus.PublishAsync(t);
+                    await _bus.PublishAsync(new OrderPaid(command.Id));
                 }
                 catch (Exception ex)
                 {

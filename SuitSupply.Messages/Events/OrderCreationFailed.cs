@@ -7,8 +7,8 @@ namespace SuitSupply.Messages.Events
         public OrderCreationFailed(string id, List<Error> errors)
         {
             Errors = errors;
-            _orderId = id;
-            _state = OrderState.Registered;
+            OrderId = id;
+            State = OrderState.Registered;
         }
 
         public List<Error> Errors { get; private set; }

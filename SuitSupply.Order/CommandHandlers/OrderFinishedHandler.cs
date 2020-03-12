@@ -31,8 +31,8 @@ namespace SuitSupply.Order
                         Text = $"Your Order is Done!"
                     });
                     await _bus.PublishAsync(notificationCommand);
-                    var eve = new OrderFinished();
-                    eve.SetOrderId(command.Id);
+                    var eve = new OrderFinished(command.Id);
+                    Console.WriteLine($"finished {eve.RequestId}");
                     await _bus.PublishAsync(eve);
 
                 }
