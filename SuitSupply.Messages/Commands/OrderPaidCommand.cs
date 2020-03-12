@@ -2,6 +2,11 @@ namespace SuitSupply.Messages.Commands
 {
     public class OrderPaidCommand
     {
-        public string Id { get; set; }
+        public OrderPaidCommand(string id)
+        {
+            Id = id;
+        }
+
+        public string Id { get; private set; }
     }
 }

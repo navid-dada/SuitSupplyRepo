@@ -15,6 +15,7 @@ namespace SuitSupply.Notification
                 .AddJsonFile("appconfig.json", true, true)
                 .Build();
             var bus = RabbitHutch.CreateBus("host=localhost;username=admin;password=admin");
+            Console.WriteLine("Notify Service is running now....");
             bus.Subscribe("Notifier", (NotifyCustomerCommand x) =>
             {
                 var notifierBuilder = new SimpleNotifierFactory(config);
@@ -24,6 +25,7 @@ namespace SuitSupply.Notification
                     notifier.SendNotification(notification.Recipient, notification.Text);
                 }
             });
+            Console.ReadKey();
         }
     }
 }

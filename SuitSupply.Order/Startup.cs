@@ -50,6 +50,7 @@ namespace SuitSupply.Order
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            
             app.ApplicationServices.GetService(typeof(CreateOrderHandler));
             app.ApplicationServices.GetService(typeof(OrderPaidHandler));
             app.ApplicationServices.GetService(typeof(OrderFinishedHandler));

@@ -12,6 +12,8 @@ using WebApplication.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApplication.EventListeners;
+using WebApplication.Helper;
 using WebApplication.Services;
 
 namespace WebApplication
@@ -44,6 +46,15 @@ namespace WebApplication
                 
             });
             services.AddTransient<IOrderService, OrderService>();
+
+            services.AddSingleton(typeof(OrderCreatedEventListener));
+            services.AddSingleton(typeof(OrderCreationFailedEventListener));
+            services.AddSingleton(typeof(OrderFinishedEventListener));
+            services.AddSingleton(typeof(OrderFinishingFailedEventListener));
+            services.AddSingleton(typeof(OrderPaidEventListener));
+            services.AddSingleton(typeof(OrderPaymentFailedEventListener));
+            services.AddSingleton(typeof(TaskManager));
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -79,7 +90,15 @@ namespace WebApplication
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
-            await IdentityDataInitializer.SeedData(userManager, roleManager); 
+            await IdentityDataInitializer.SeedData(userManager, roleManager);
+            app.ApplicationServices.GetService(typeof(OrderCreatedEventListener));
+            app.ApplicationServices.GetService(typeof(OrderCreationFailedEventListener));
+            app.ApplicationServices.GetService(typeof(OrderFinishedEventListener));
+            app.ApplicationServices.GetService(typeof(OrderFinishingFailedEventListener));
+            app.ApplicationServices.GetService(typeof(OrderPaidEventListener));
+            app.ApplicationServices.GetService(typeof(OrderPaymentFailedEventListener));
+            app.ApplicationServices.GetService(typeof(TaskManager));
+
         }
     }
 }

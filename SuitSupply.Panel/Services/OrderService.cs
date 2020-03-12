@@ -9,10 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SuitSupply.Messages;
 using SuitSupply.Messages.Commands;
+using WebApplication.Helper;
 using WebApplication.Models;
 using Alternation = SuitSupply.Messages.Commands.Alternation;
-
-
 
 namespace WebApplication.Services
 {
@@ -20,16 +19,18 @@ namespace WebApplication.Services
     {
         private readonly IBus _channel;
         private readonly IConfiguration _configuration;
-        public OrderService(IConfiguration configuration,IBus rabbitBus)
+        private TaskManager _taskManager;
+        public OrderService(IConfiguration configuration,IBus rabbitBus,  TaskManager taskManager)
         {
             _channel = rabbitBus;
             _configuration = configuration;
+            _taskManager = taskManager;
         }
 
         public async Task CreateOrder(OrderInput input)
         {
-            var create = new CreateOrderCommand();
-            create.Email = input.Email;
+            var create = new CreateOrderCommand( input.Email);
+            
             input.Alternations.ForEach(x =>
             {
                 var alt = new Alternation
@@ -40,17 +41,19 @@ namespace WebApplication.Services
                 };
                 create.Alternations.Add(alt);
             });
+            var taskCompletionSource = _taskManager.AddWaitingTask($"{create.Email}_{OrderState.Registered}");
             await _channel.PublishAsync(create);
+            await taskCompletionSource.Task;
         }
 
         public async Task NotifyOrderPayment(string orderId)
         {
-            await _channel.PublishAsync(new OrderPaidCommand{Id = orderId});
+            await _channel.PublishAsync(new OrderPaidCommand(orderId));
         }
 
         public async Task NotifyOrderFinished(string orderId)
         {
-            await _channel.PublishAsync(new OrderFinishedCommand{Id = orderId});
+            await _channel.PublishAsync(new OrderFinishedCommand(orderId));
         }
 
         public async Task<List<OrderVM>> GetOrderList()

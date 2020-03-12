@@ -22,7 +22,10 @@ namespace SuitSupply.Order
                     var order = await ctx.Orders.Include("Alternations").FirstAsync( x=> x.Id == Guid.Parse(command.Id));
                     order.SetAsPaid();
                     ctx.SaveChanges();
-                    await _bus.PublishAsync(new OrderPaid(command.Id));
+                    Console.WriteLine($"Paid Id: {command.Id}");
+                    var t = new OrderPaid();
+                    t.SetOrderId(command.Id);
+                    await _bus.PublishAsync(t);
                 }
                 catch (Exception ex)
                 {

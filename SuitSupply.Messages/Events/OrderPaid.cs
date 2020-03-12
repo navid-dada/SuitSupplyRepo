@@ -1,11 +1,14 @@
+using System;
+
 namespace SuitSupply.Messages.Events
 {
     public class OrderPaid : BaseEvent
     {
-        public OrderPaid(string orderId)
+        public OrderPaid()
         {
-            _orderId = orderId;
             _state = OrderState.Paid;
         }
+
+        
     }
 }

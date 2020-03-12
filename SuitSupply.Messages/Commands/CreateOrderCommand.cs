@@ -4,8 +4,12 @@ namespace SuitSupply.Messages.Commands
 {
     public class CreateOrderCommand
     {
-        public string RequestId { get; set; }
-        public string Email { get; set; }
+        public CreateOrderCommand(string email)
+        {
+            Email = email;
+        }
+
+        public string Email { get; private set; }
         public List<Alternation> Alternations { get; set; } = new List<Alternation>();
     }
 
