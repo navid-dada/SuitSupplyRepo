@@ -36,7 +36,7 @@ namespace WebApplication.Services
                 var alt = new Alteration
                 {
                     Part = (AlterationPart) x.Part,
-                    Size = 3.5f,
+                    Size = x.Size,
                     Side = (AlterationSide) x.Side,
                 };
                 create.Alterations.Add(alt);
@@ -64,7 +64,7 @@ namespace WebApplication.Services
         {
             var serviceUrl = _configuration.GetSection("Services")["OrderBaseAddress"];
             var httpclient = new HttpClient();
-            var strResponse = await httpclient.GetStringAsync($"{serviceUrl}order/getallorders");
+            var strResponse = await httpclient.GetStringAsync($"{serviceUrl}order");
             return JsonConvert.DeserializeObject<List<OrderVM>>(strResponse);
         }
     }

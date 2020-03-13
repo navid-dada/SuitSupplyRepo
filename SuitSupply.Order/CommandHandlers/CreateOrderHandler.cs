@@ -41,9 +41,7 @@ namespace SuitSupply.Order
                         }
                         else
                         {
-                            order.AddAlteration(
-                                Alteration.CreateTrousersAlterationInstance(lenght, alteration.Side,
-                                    alterationType));
+                            order.AddAlteration(Alteration.CreateTrousersAlterationInstance(lenght, alteration.Side, alterationType));
                         }
                     }
 

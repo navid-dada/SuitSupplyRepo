@@ -16,7 +16,7 @@ namespace SuitSupply.Messages
     
     public enum AlterationPart{
         Sleeves = 0, 
-        Trousers = 0
+        Trousers = 1
     }
 
     public enum AlterationSide

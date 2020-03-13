@@ -19,7 +19,7 @@ namespace SuitSupply.Order
             {
                 try
                 {
-                    var order = await ctx.Orders.Include("Alternations").FirstAsync( x=> x.Id == Guid.Parse(command.Id));
+                    var order = await ctx.Orders.Include("Alterations").FirstAsync( x=> x.Id == Guid.Parse(command.Id));
                     order.SetAsPaid();
                     ctx.SaveChanges();
                     Console.WriteLine($"Paid Id: {command.Id}");

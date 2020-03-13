@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using RabbitMQ.Client.Framing.Impl;
 using SuitSupply.Messages;
 using Alternation = SuitSupply.Order.Domain.Alteration;
@@ -26,7 +27,7 @@ namespace SuitSupply.Order.Controllers
             public int State { get; set; }
         }
         [HttpGet]
-        [Route("GetAllOrders")]
+        [Route("")]
         public List<OrderVM> GetAllOrders()
         {
             
@@ -40,12 +41,13 @@ namespace SuitSupply.Order.Controllers
         }
         
         [HttpGet]
-        [Route("GetOrderItems")]
-        public IEnumerable<Alternation> GetAllOrders(string Id)
+        [Route("{id}")]
+        public IEnumerable<Alternation> GetAllOrders([FromRoute]string id)
         {
-            
-            var result = _context.Orders.Include("Alternations").First(x=> x.Id == Guid.Parse(Id)).Alterations;
-            return result;
+            Console.WriteLine(id);
+            var result = _context.Orders.Include("Alterations").First(x=> x.Id == Guid.Parse(id));
+            Console.WriteLine(JsonConvert.SerializeObject(result));
+            return result.Alterations;
         }
     }
 }

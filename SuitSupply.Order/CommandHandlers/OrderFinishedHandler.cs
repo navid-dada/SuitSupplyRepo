@@ -19,7 +19,7 @@ namespace SuitSupply.Order
             {
                 try
                 {
-                    var order = await ctx.Orders.Include("Alternations")
+                    var order = await ctx.Orders.Include("Alterations")
                         .FirstAsync(x => x.Id == Guid.Parse(command.Id));
                     order.SetAsFinished();
                     ctx.SaveChanges();

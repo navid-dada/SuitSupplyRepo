@@ -19,13 +19,13 @@ namespace SuitSupply.Order.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("SuitSupply.Order.Domain.Alternation", b =>
+            modelBuilder.Entity("SuitSupply.Order.Domain.Alteration", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<float>("AlternationLength")
+                    b.Property<float>("AlterationLength")
                         .HasColumnType("real");
 
                     b.Property<int>("AlternationPart")
@@ -44,7 +44,7 @@ namespace SuitSupply.Order.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Alternation");
+                    b.ToTable("Alteration");
                 });
 
             modelBuilder.Entity("SuitSupply.Order.Domain.Order", b =>
@@ -73,10 +73,10 @@ namespace SuitSupply.Order.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("SuitSupply.Order.Domain.Alternation", b =>
+            modelBuilder.Entity("SuitSupply.Order.Domain.Alteration", b =>
                 {
                     b.HasOne("SuitSupply.Order.Domain.Order", null)
-                        .WithMany("Alternations")
+                        .WithMany("Alterations")
                         .HasForeignKey("OrderId");
                 });
 #pragma warning restore 612, 618
