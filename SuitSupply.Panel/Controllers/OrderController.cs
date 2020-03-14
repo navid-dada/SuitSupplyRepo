@@ -42,5 +42,11 @@ namespace WebApplication.Controllers
             await _orderService.NotifyOrderFinished(id);
             return RedirectToAction("Index");
         }
+        
+        public async Task<ActionResult> OrderDetail(string id)
+        {
+            var result = await _orderService.GetOrderDetail(id);
+            return View(result);
+        }
     }
 }

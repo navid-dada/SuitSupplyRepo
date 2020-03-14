@@ -22,7 +22,15 @@
                     <td>@i</td>
                     <td class="col-3">@item.CustomerEmail</td>
                     <td class="col-3">@item.State</td>
-                    <td class="col-3"><a class="">Detail</a></td>
+                    <td class="col-3">
+                            @Html.ActionLink("Detail", "OrderDetail", "Order",
+                                                    new {
+                                                        Id = item.Id
+                                                    },
+                                                    new {
+                                                        @class = "btn btn-primary"
+                                                    })
+                    </td>
                     <td col="col-3">
                         @if (item.State == @OrderState.Registered)
                         {

@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SuitSupply.Messages;
+using SuitSupply.Order.Repositories;
 
 namespace SuitSupply.Order
 {
@@ -29,9 +30,11 @@ namespace SuitSupply.Order
         {
             services.AddDbContext<SuitSupplyContext>(opt=> opt.UseSqlServer(Configuration.GetConnectionString("conStr")));
             services.RegisterEasyNetQ("host=localhost;username=admin;password=admin");
+            services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient(typeof(CreateOrderHandler));
             services.AddTransient(typeof(OrderFinishedHandler));
             services.AddTransient(typeof(OrderPaidHandler));
+            
             services.AddControllers();
         }
 

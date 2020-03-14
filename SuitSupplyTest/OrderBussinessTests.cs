@@ -1,8 +1,14 @@
 using System;
+using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using NUnit.Framework;
 using SuitSupply.Messages;
+using SuitSupply.Order;
 using SuitSupply.Order.Domain;
 using Alternation = SuitSupply.Order.Domain.Alteration;
 
@@ -36,10 +42,10 @@ namespace SuitSupplyTest
             order.AddAlteration(Alteration.CreateTrousersAlterationInstance(left_length, AlterationSide.Left,AlterationType.Decreasement));
             order.AddAlteration(Alteration.CreateTrousersAlterationInstance(right_length, AlterationSide.Right, AlterationType.Increscent));
             Assert.True(order.Alterations.Count() == 2);
-            var rightItem = order.Alterations.First(x=>x.AlternationSide== AlterationSide.Right);
+            var rightItem = order.Alterations.First(x=>x.AlterationSide== AlterationSide.Right);
             Assert.AreEqual(right_length, rightItem.AlterationLength);
             
-            var leftItem = order.Alterations.First(x=>x.AlternationSide== AlterationSide.Right);
+            var leftItem = order.Alterations.First(x=>x.AlterationSide== AlterationSide.Right);
             Assert.AreEqual(right_length, leftItem.AlterationLength);
         }
 
@@ -70,14 +76,32 @@ namespace SuitSupplyTest
             TestDelegate testDelegate = () => order.SetAsPaid();
             Assert.Throws<InvalidOperationException>(testDelegate);
         }
-        
-        
+
+
         [Test]
         public void order_set_finished_with_no_payment()
         {
             var order = new Order("Email@site.com");
             TestDelegate testDelegate = () => order.SetAsFinished();
             Assert.Throws<InvalidOperationException>(testDelegate);
+        }
+
+        [Test]
+        public void dbTest()
+        {
+            
+            var options = new DbContextOptionsBuilder().UseInMemoryDatabase("testDB").Options;
+            var context =
+                new SuitSupplyContext(options);
+            
+            Order order = new Order("mail@company.com");
+            context.Entry(order).State = EntityState.Modified;
+            
+            
+            context.SaveChanges();
+            var count = context.Set<Order>().Count();
+            Assert.IsTrue(count == 1);
+            
         }
 
     }

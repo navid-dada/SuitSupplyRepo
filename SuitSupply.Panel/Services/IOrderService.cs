@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApplication.Models;
+using Alteration = SuitSupply.Messages.Commands.Alteration;
 
 namespace WebApplication.Services
 {
@@ -11,5 +12,6 @@ namespace WebApplication.Services
         Task NotifyOrderFinished(string orderId);
         Task<List<OrderVM>> GetOrderList();
 
+        Task<List<Alteration>> GetOrderDetail(string id);
     }
 }

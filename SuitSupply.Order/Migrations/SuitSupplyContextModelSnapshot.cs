@@ -28,13 +28,13 @@ namespace SuitSupply.Order.Migrations
                     b.Property<float>("AlterationLength")
                         .HasColumnType("real");
 
-                    b.Property<int>("AlternationPart")
+                    b.Property<int>("AlterationPart")
                         .HasColumnType("int");
 
-                    b.Property<int>("AlternationSide")
+                    b.Property<int>("AlterationSide")
                         .HasColumnType("int");
 
-                    b.Property<int>("AlternationType")
+                    b.Property<int>("AlterationType")
                         .HasColumnType("int");
 
                     b.Property<Guid?>("OrderId")

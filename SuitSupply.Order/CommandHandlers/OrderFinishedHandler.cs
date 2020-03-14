@@ -11,18 +11,19 @@ namespace SuitSupply.Order
     public class OrderFinishedHandler
     {
         private readonly IBus _bus;
+        private readonly IOrderRepository _orderRepository;
 
-        public OrderFinishedHandler(IBus bus, SuitSupplyContext ctx)
+        public OrderFinishedHandler(IBus bus, IOrderRepository orderRepository)
         {
+            _orderRepository = orderRepository;
             _bus = bus;
             _bus.Subscribe("OrderFinished", async (OrderFinishedCommand command) =>
             {
                 try
                 {
-                    var order = await ctx.Orders.Include("Alterations")
-                        .FirstAsync(x => x.Id == Guid.Parse(command.Id));
+                    var order = await _orderRepository.Get(Guid.Parse(command.Id)); 
                     order.SetAsFinished();
-                    ctx.SaveChanges();
+                    await _orderRepository.Update(order);
                     var notificationCommand = new NotifyCustomerCommand(order.Id.ToString());
                     notificationCommand.AddNotification(new Notification
                     {

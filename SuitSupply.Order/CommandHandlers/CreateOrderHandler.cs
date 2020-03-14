@@ -18,11 +18,12 @@ namespace SuitSupply.Order
     {
         private readonly IBus _bus;
         private readonly ILogger _logger = LogManager.GetLogger("CreateOrderHandler");
-
-        public CreateOrderHandler(IBus bus, SuitSupplyContext ctx)
+        private IOrderRepository _orderRepository; 
+        public CreateOrderHandler(IBus bus, IOrderRepository orderRepository)
         {
+            _orderRepository = orderRepository;
             _bus = bus;
-            _bus.Subscribe("CreateOrder", (CreateOrderCommand command) =>
+            _bus.Subscribe("CreateOrder", async (CreateOrderCommand command) =>
             {
                 Console.WriteLine($"reqested on {DateTime.Now.Ticks}");
 
@@ -47,11 +48,10 @@ namespace SuitSupply.Order
 
                     Console.WriteLine(
                         $"Adding Order to database {order.CustomerEmail} with Alternation count {order.Alterations.Count()}");
-                    ctx.Orders.Add(order);
-                    ctx.SaveChanges();
+                    await _orderRepository.Add(order);
                     
                     
-                    _bus.Publish( new OrderCreated(command.Email));
+                    await _bus.PublishAsync( new OrderCreated(command.Email));
                 }
                 catch (Exception ex)
                 {
@@ -64,7 +64,7 @@ namespace SuitSupply.Order
                             ErrorCode = 101, Message = ex.Message
                         }
                     };
-                    _bus.Publish(new OrderCreationFailed(command.Email, errors));
+                    await _bus.PublishAsync(new OrderCreationFailed(command.Email, errors));
                 }
             });
         }

@@ -67,5 +67,13 @@ namespace WebApplication.Services
             var strResponse = await httpclient.GetStringAsync($"{serviceUrl}order");
             return JsonConvert.DeserializeObject<List<OrderVM>>(strResponse);
         }
+
+        public async Task<List<Alteration>> GetOrderDetail(string id)
+        {
+            var serviceUrl = _configuration.GetSection("Services")["OrderBaseAddress"];
+            var httpclient = new HttpClient();
+            var strResponse = await httpclient.GetStringAsync($"{serviceUrl}order/{id}");
+            return JsonConvert.DeserializeObject<List<Alteration>>(strResponse);
+        }
     }
 }

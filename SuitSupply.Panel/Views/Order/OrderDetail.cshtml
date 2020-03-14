@@ -1,0 +1,27 @@
+@model List<SuitSupply.Messages.Commands.Alteration>
+<div class="jumbotron">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <td>#</td>
+            <td>Part</td>
+            <td>Side</td>
+            <td>Size (cm)</td>
+        </tr>
+        </thead>
+        <tbody>
+        @{
+            var i = 1;
+            foreach (var item in @Model)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@item.Part</td>
+                    <td>@item.Side</td>
+                    <td>@item.Size</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>

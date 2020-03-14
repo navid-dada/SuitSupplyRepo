@@ -11,18 +11,18 @@ namespace SuitSupply.Order
     public class OrderPaidHandler
     {
         private readonly IBus _bus;
-
-        public OrderPaidHandler(IBus bus, SuitSupplyContext ctx)
+        private readonly IOrderRepository _orderRepository;
+        public OrderPaidHandler(IBus bus, IOrderRepository orderRepository)
         {
+            _orderRepository = orderRepository; 
             _bus = bus;
             _bus.Subscribe("OrderPaid", async (OrderPaidCommand command) =>
             {
                 try
                 {
-                    var order = await ctx.Orders.Include("Alterations").FirstAsync( x=> x.Id == Guid.Parse(command.Id));
+                    var order = await _orderRepository.Get( Guid.Parse(command.Id));
                     order.SetAsPaid();
-                    ctx.SaveChanges();
-                    Console.WriteLine($"Paid Id: {command.Id}");
+                    await _orderRepository.Update(order);
                     await _bus.PublishAsync(new OrderPaid(command.Id));
                 }
                 catch (Exception ex)

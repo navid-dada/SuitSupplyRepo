@@ -39,7 +39,7 @@ namespace SuitSupply.Order.Domain
 
         public void AddAlteration(Alteration Alternation)
         {
-            var item = _alterations.FirstOrDefault(x => x.AlternationPart == Alternation.AlternationPart && x.AlternationSide == Alternation.AlternationSide);
+            var item = _alterations.FirstOrDefault(x => x.AlterationPart == Alternation.AlterationPart && x.AlterationSide == Alternation.AlterationSide);
             if (item == null)
             {
                 _alterations.Add(Alternation);
@@ -78,9 +78,9 @@ namespace SuitSupply.Order.Domain
 
     public class Alteration: BaseEntity
     {
-        public AlterationPart AlternationPart { get; private set; }
-        public AlterationSide AlternationSide { get; private set; }
-        public AlterationType AlternationType { get; private set;}
+        public AlterationPart AlterationPart { get; private set; }
+        public AlterationSide AlterationSide { get; private set; }
+        public AlterationType AlterationType { get; private set;}
         
         public float AlterationLength { get; private set; }
 
@@ -101,9 +101,9 @@ namespace SuitSupply.Order.Domain
             }
 
             var Alternation = new Alteration(Math.Abs(lenght));
-            Alternation.AlternationPart = AlterationPart.Sleeves;
-            Alternation.AlternationSide = side;
-            Alternation.AlternationType = type;
+            Alternation.AlterationPart = AlterationPart.Sleeves;
+            Alternation.AlterationSide = side;
+            Alternation.AlterationType = type;
             return Alternation;
         }
         
@@ -115,9 +115,9 @@ namespace SuitSupply.Order.Domain
             }
 
             var Alternation = new Alteration(Math.Abs(lenght));
-            Alternation.AlternationPart = AlterationPart.Trousers;
-            Alternation.AlternationSide = side;
-            Alternation.AlternationType = type;
+            Alternation.AlterationPart = AlterationPart.Trousers;
+            Alternation.AlterationSide = side;
+            Alternation.AlterationType = type;
             return Alternation;
         }
     }

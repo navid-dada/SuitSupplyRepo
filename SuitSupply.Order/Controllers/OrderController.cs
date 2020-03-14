@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using RabbitMQ.Client.Framing.Impl;
 using SuitSupply.Messages;
+using SuitSupply.Messages.Commands;
 using Alternation = SuitSupply.Order.Domain.Alteration;
 
 namespace SuitSupply.Order.Controllers
@@ -14,10 +17,10 @@ namespace SuitSupply.Order.Controllers
     [Route("/api/Order")]
     public class OrderController:Controller
     {
-        private readonly SuitSupplyContext _context;
-        public OrderController(SuitSupplyContext ctx)
+        private readonly IOrderRepository _orderRepository;
+        public OrderController(IOrderRepository orderRepository)
         {
-            _context = ctx;
+            _orderRepository = orderRepository;
         }
         
         public class OrderVM
@@ -28,10 +31,10 @@ namespace SuitSupply.Order.Controllers
         }
         [HttpGet]
         [Route("")]
-        public List<OrderVM> GetAllOrders()
+        public async Task<List<OrderVM>> GetAllOrders()
         {
             
-            var result = _context.Orders.ToList().Select(x => new OrderVM
+            var result = _orderRepository.GetAll(x=>true).Select(x => new OrderVM
             {
                 Id = x.Id.ToString(),
                 State = (int)x.State,
@@ -42,12 +45,25 @@ namespace SuitSupply.Order.Controllers
         
         [HttpGet]
         [Route("{id}")]
-        public IEnumerable<Alternation> GetAllOrders([FromRoute]string id)
+        public async Task<IEnumerable<Messages.Commands.Alteration>> GetAllOrders([FromRoute]string id)
         {
             Console.WriteLine(id);
-            var result = _context.Orders.Include("Alterations").First(x=> x.Id == Guid.Parse(id));
-            Console.WriteLine(JsonConvert.SerializeObject(result));
-            return result.Alterations;
+            var result = (await _orderRepository.Get(Guid.Parse(id))).Alterations;
+            var response = new List<Alteration>();
+            foreach (var item in result)
+            {
+                var size = item.AlterationType == AlterationType.Decreasement
+                    ? (-1) * item.AlterationLength
+                    : item.AlterationLength;
+                response.Add(new Alteration
+                {
+                    Size = size,
+                    Part = item.AlterationPart,
+                    Side = item.AlterationSide
+                });
+            }
+
+            return response;
         }
     }
 }
