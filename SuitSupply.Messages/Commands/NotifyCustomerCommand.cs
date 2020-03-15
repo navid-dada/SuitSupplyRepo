@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace SuitSupply.Messages.Commands
 {
-    public class NotifyCustomerCommand
+    public class NotifyCustomerCommand :BaseMessage
     {
         public NotifyCustomerCommand(string orderId)
         {

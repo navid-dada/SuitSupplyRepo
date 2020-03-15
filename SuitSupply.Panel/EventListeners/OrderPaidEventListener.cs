@@ -1,27 +1,29 @@
 using System;
+using System.Threading.Tasks;
 using EasyNetQ;
 using Microsoft.Extensions.Logging;
 using SuitSupply.Messages.Events;
+using SuitSupply.SericeBase;
 using WebApplication.Helper;
 
 namespace WebApplication.EventListeners
 {
-    public class OrderPaidEventListener
+    public class OrderPaidEventListener : BaseHandler<OrderPaid>
     {
         private readonly TaskManager _taskManager;
-        private readonly IBus _bus;
         private readonly ILogger<OrderPaidEventListener> _logger;
 
-        public OrderPaidEventListener(IBus bus, TaskManager taskManager , ILogger<OrderPaidEventListener> logger)
+        public OrderPaidEventListener(IBus bus, TaskManager taskManager , ILogger<OrderPaidEventListener> logger) : base(bus,"orderPaidListener")
         {
             _logger = logger;
             _taskManager = taskManager;
-            _bus = bus;
-            _bus.Subscribe("orderPaidListener", (OrderPaid x) =>
-            {
-                _logger.LogInformation($"order payment done successfully for {x.OrderId}");
-                _taskManager.CompleteTask(x.RequestId, true); 
-            });
+        }
+
+        protected override Task OnHandle(OrderPaid message)
+        {
+            _logger.LogInformation($"order payment done successfully for {message.OrderId}");
+            _taskManager.CompleteTask(message.RequestId, true); 
+            return Task.CompletedTask;
         }
     }
 }

@@ -10,25 +10,26 @@ using SuitSupply.Messages;
 using SuitSupply.Messages.Commands;
 using SuitSupply.Messages.Events;
 using SuitSupply.Order.Domain;
+using SuitSupply.SericeBase;
 using Alteration = SuitSupply.Order.Domain.Alteration;
 
 
 namespace SuitSupply.Order
 {
-    public class CreateOrderHandler
+    public class CreateOrderHandler : BaseHandler<CreateOrderCommand>
     {
-        private readonly IBus _bus;
         private readonly ILogger<CreateOrderHandler> _logger ;
         private IOrderRepository _orderRepository; 
-        public CreateOrderHandler(IBus bus, IOrderRepository orderRepository, ILogger<CreateOrderHandler> logger)
+        public CreateOrderHandler(IBus bus, IOrderRepository orderRepository, ILogger<CreateOrderHandler> logger):base(bus,"CreateOrder")
         {
             _logger = logger;
             _orderRepository = orderRepository;
-            _bus = bus;
-            _bus.Subscribe("CreateOrder", async (CreateOrderCommand command) =>
-            {
-                Console.WriteLine($"reqested on {DateTime.Now.Ticks}");
+            
+        }
 
+        protected override async Task OnHandle(CreateOrderCommand command)
+        {
+            {
                 try
                 {
                     _logger.LogInformation($"Create order command received for {command.Email}");
@@ -52,7 +53,7 @@ namespace SuitSupply.Order
                     _logger.LogInformation(
                         $"Order added to database for {order.CustomerEmail} with Alternation count {order.Alterations.Count()} and Id= {order.Id}");
                     
-                    await _bus.PublishAsync( new OrderCreated(command.Email));
+                    await Bus.PublishAsync( new OrderCreated(command.Email));
                 }
                 catch (Exception ex)
                 {
@@ -65,9 +66,10 @@ namespace SuitSupply.Order
                             ErrorCode = 101, Message = ex.Message
                         }
                     };
-                    await _bus.PublishAsync(new OrderCreationFailed(command.Email, errors));
+                    await Bus.PublishAsync(new OrderCreationFailed(command.Email, errors));
                 }
-            });
+            }
         }
+       
     }
 }

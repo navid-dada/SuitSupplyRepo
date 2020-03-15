@@ -1,27 +1,30 @@
 using System;
+using System.Threading.Tasks;
 using EasyNetQ;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SuitSupply.Messages.Events;
+using SuitSupply.SericeBase;
 using WebApplication.Helper;
 
 namespace WebApplication.EventListeners
 {
-    public class OrderCreationFailedEventListener
+    public class OrderCreationFailedEventListener : BaseHandler<OrderCreationFailed>
     {
         private readonly TaskManager _taskManager;
-        private readonly IBus _bus;
         private readonly ILogger<OrderCreationFailedEventListener> _logger;
 
-        public OrderCreationFailedEventListener(IBus bus, TaskManager taskManager, ILogger<OrderCreationFailedEventListener> logger)
+        public OrderCreationFailedEventListener(IBus bus, TaskManager taskManager, ILogger<OrderCreationFailedEventListener> logger):base(bus, "orderCreationFailedListener")
         {
             _logger = logger;
             _taskManager = taskManager;
-            _bus = bus;
-            _bus.Subscribe("orderCreationFailedListener", (OrderCreationFailed x) =>
-            {
-                _logger.LogInformation($"order failed to create for email {x.RequestId}");
-                _taskManager.CompleteTask(x.RequestId, false);
-            });
+        }
+
+        protected override Task OnHandle(OrderCreationFailed message)
+        {
+            _logger.LogInformation($"order failed to create for email {message.RequestId} with Error{JsonConvert.SerializeObject(message.Errors)}");
+            _taskManager.CompleteTask(message.RequestId, false);
+            return Task.CompletedTask;
         }
     }
 }

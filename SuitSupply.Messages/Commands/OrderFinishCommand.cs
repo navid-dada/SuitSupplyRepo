@@ -1,6 +1,6 @@
 namespace SuitSupply.Messages.Commands
 {
-    public class OrderFinishedCommand
+    public class OrderFinishedCommand :BaseMessage
     {
         public OrderFinishedCommand(string id)
         {
