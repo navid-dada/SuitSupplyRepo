@@ -12,6 +12,8 @@ using WebApplication.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using NLog.Web;
 using WebApplication.EventListeners;
 using WebApplication.Helper;
 using WebApplication.Services;
@@ -30,6 +32,12 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(x =>
+            {
+                x.ClearProviders();
+                x.AddConfiguration(Configuration.GetSection("Logging"));
+                x.AddNLog("NLog.config");
+            });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -41,7 +49,7 @@ namespace WebApplication
                 options.User.RequireUniqueEmail = true;
             }).AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.RegisterEasyNetQ("host=localhost;username=admin;password=admin", c =>
+            services.RegisterEasyNetQ(Configuration.GetSection("BusConnectionString").Value, c =>
             {
                 
             });

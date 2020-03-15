@@ -1,0 +1,5 @@
+2020-03-15 15:39:57.7713 Info Message Template Auto Format enabled
+2020-03-15 15:39:57.7921 Info Loading assembly: NLog.Web.AspNetCore
+2020-03-15 15:39:57.8415 Info Adding target AsyncTargetWrapper(Name=asyncWrapper)
+2020-03-15 15:39:57.8516 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: asyncWrapper
+2020-03-15 15:39:57.8648 Info Found 18 configuration items

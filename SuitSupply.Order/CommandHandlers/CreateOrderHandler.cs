@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using EasyNetQ;
+using Microsoft.Extensions.Logging;
 using NLog;
 using SuitSupply.Messages;
 using SuitSupply.Messages.Commands;
@@ -17,10 +18,11 @@ namespace SuitSupply.Order
     public class CreateOrderHandler
     {
         private readonly IBus _bus;
-        private readonly ILogger _logger = LogManager.GetLogger("CreateOrderHandler");
+        private readonly ILogger<CreateOrderHandler> _logger ;
         private IOrderRepository _orderRepository; 
-        public CreateOrderHandler(IBus bus, IOrderRepository orderRepository)
+        public CreateOrderHandler(IBus bus, IOrderRepository orderRepository, ILogger<CreateOrderHandler> logger)
         {
+            _logger = logger;
             _orderRepository = orderRepository;
             _bus = bus;
             _bus.Subscribe("CreateOrder", async (CreateOrderCommand command) =>
@@ -29,7 +31,7 @@ namespace SuitSupply.Order
 
                 try
                 {
-                    Console.WriteLine($"Create order command recived for {command.Email}");
+                    _logger.LogInformation($"Create order command received for {command.Email}");
                     var order = new Domain.Order(command.Email);
                     foreach (var alteration in command.Alterations)
                     {
@@ -46,17 +48,16 @@ namespace SuitSupply.Order
                         }
                     }
 
-                    Console.WriteLine(
-                        $"Adding Order to database {order.CustomerEmail} with Alternation count {order.Alterations.Count()}");
                     await _orderRepository.Add(order);
-                    
+                    _logger.LogInformation(
+                        $"Order added to database for {order.CustomerEmail} with Alternation count {order.Alterations.Count()} and Id= {order.Id}");
                     
                     await _bus.PublishAsync( new OrderCreated(command.Email));
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(
-                        $"Exception occured on creating order for Email {command.Email} ,Exception {ex} ");
+                    _logger.LogError(
+                        $"Exception occured on creating order for Email {command.Email}", ex);
                     var errors = new List<Error>
                     {
                         new Error

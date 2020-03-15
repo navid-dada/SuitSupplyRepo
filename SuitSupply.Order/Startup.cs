@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 using SuitSupply.Messages;
 using SuitSupply.Order.Repositories;
 
@@ -28,8 +29,14 @@ namespace SuitSupply.Order
         // This method gets called by the runtime. Use this method to add services to the container.
         public  void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(x =>
+            {
+                x.ClearProviders();
+                x.AddConfiguration(Configuration.GetSection("Logging"));
+                x.AddNLog("NLog.config");
+            });
             services.AddDbContext<SuitSupplyContext>(opt=> opt.UseSqlServer(Configuration.GetConnectionString("conStr")));
-            services.RegisterEasyNetQ("host=localhost;username=admin;password=admin");
+            services.RegisterEasyNetQ(Configuration.GetSection("BusConnectionString").Value);
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient(typeof(CreateOrderHandler));
             services.AddTransient(typeof(OrderFinishedHandler));

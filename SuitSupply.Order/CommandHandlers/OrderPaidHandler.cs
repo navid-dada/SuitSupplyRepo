@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using EasyNetQ;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using NLog;
 using SuitSupply.Messages;
 using SuitSupply.Messages.Commands;
 using SuitSupply.Messages.Events;
@@ -12,12 +14,15 @@ namespace SuitSupply.Order
     {
         private readonly IBus _bus;
         private readonly IOrderRepository _orderRepository;
-        public OrderPaidHandler(IBus bus, IOrderRepository orderRepository)
+        private readonly ILogger<OrderPaidHandler> _logger; 
+        public OrderPaidHandler(IBus bus, IOrderRepository orderRepository, ILogger<OrderPaidHandler> logger)
         {
+            _logger = logger;
             _orderRepository = orderRepository; 
             _bus = bus;
             _bus.Subscribe("OrderPaid", async (OrderPaidCommand command) =>
             {
+                _logger.LogInformation($"OrderPaid Command has been received for {command.Id} ");
                 try
                 {
                     var order = await _orderRepository.Get( Guid.Parse(command.Id));
@@ -27,7 +32,7 @@ namespace SuitSupply.Order
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Exception occured on setting paid order for orderId {command.Id} ,Exception {ex} ");
+                    _logger.LogError($"Exception occured on setting paid order for orderId {command.Id}", ex);
                     var errors = new List<Error>
                     {
                         new Error

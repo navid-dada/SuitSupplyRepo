@@ -6,20 +6,25 @@ using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NLog;
 using RabbitMQ.Client.Framing.Impl;
 using SuitSupply.Messages;
 using SuitSupply.Messages.Commands;
 using Alternation = SuitSupply.Order.Domain.Alteration;
+using ILogger = NLog.ILogger;
 
 namespace SuitSupply.Order.Controllers
 {
     [Route("/api/Order")]
     public class OrderController:Controller
     {
+        private readonly ILogger<OrderController> _logger;
         private readonly IOrderRepository _orderRepository;
-        public OrderController(IOrderRepository orderRepository)
+        public OrderController(IOrderRepository orderRepository, ILogger<OrderController> logger)
         {
+            _logger = logger;
             _orderRepository = orderRepository;
         }
         
@@ -33,7 +38,7 @@ namespace SuitSupply.Order.Controllers
         [Route("")]
         public async Task<List<OrderVM>> GetAllOrders()
         {
-            
+            _logger.LogCritical("Begaeiiii");
             var result = _orderRepository.GetAll(x=>true).Select(x => new OrderVM
             {
                 Id = x.Id.ToString(),
