@@ -2,7 +2,7 @@
 
 namespace SuitSupply.Messages.Commands
 {
-    public class CreateOrderCommand
+    public class CreateOrderCommand : BaseMessage
     {
         public CreateOrderCommand(string email)
         {

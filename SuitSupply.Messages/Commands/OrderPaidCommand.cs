@@ -1,6 +1,6 @@
 namespace SuitSupply.Messages.Commands
 {
-    public class OrderPaidCommand
+    public class OrderPaidCommand : BaseMessage
     {
         public OrderPaidCommand(string id)
         {

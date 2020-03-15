@@ -38,7 +38,6 @@ namespace SuitSupply.Order.Controllers
         [Route("")]
         public async Task<List<OrderVM>> GetAllOrders()
         {
-            _logger.LogCritical("Begaeiiii");
             var result = _orderRepository.GetAll(x=>true).Select(x => new OrderVM
             {
                 Id = x.Id.ToString(),
@@ -52,7 +51,6 @@ namespace SuitSupply.Order.Controllers
         [Route("{id}")]
         public async Task<IEnumerable<Messages.Commands.Alteration>> GetAllOrders([FromRoute]string id)
         {
-            Console.WriteLine(id);
             var result = (await _orderRepository.Get(Guid.Parse(id))).Alterations;
             var response = new List<Alteration>();
             foreach (var item in result)

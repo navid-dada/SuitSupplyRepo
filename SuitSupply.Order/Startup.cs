@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
+using RabbitMQ.Client.Framing.Impl;
 using SuitSupply.Messages;
 using SuitSupply.Order.Repositories;
 
@@ -36,7 +37,7 @@ namespace SuitSupply.Order
                 x.AddNLog("NLog.config");
             });
             services.AddDbContext<SuitSupplyContext>(opt=> opt.UseSqlServer(Configuration.GetConnectionString("conStr")));
-            services.RegisterEasyNetQ(Configuration.GetSection("BusConnectionString").Value);
+            services.RegisterEasyNetQ(Configuration.GetSection("BusConnectionString").Value, c => { });
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient(typeof(CreateOrderHandler));
             services.AddTransient(typeof(OrderFinishedHandler));
